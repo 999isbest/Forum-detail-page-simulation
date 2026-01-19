@@ -722,56 +722,56 @@
         nextBtn.style.display = 'none';
 
         // 评论输入框功能：输入内容激活发布按钮
-        常量 评论输入 = 文档.querySelector('.comment-input');
-        常量 submitBtn = 文档.querySelector('.submit-btn');
-        评论输入.addEventListener('input', () => {
-            submitBtn.disabled = 评论输入.value.trim() === '';
+        const commentInput = document.querySelector('.comment-input');
+        const submitBtn = document.querySelector('.submit-btn');
+        commentInput.addEventListener('input', () => {
+            submitBtn.disabled = commentInput.value.trim() === '';
         });
 
         // 评论功能：仅保留点击响应
-        常量 atFunc = 文档.getElementById('atFunc');
-        常量 emojiFunc = 文档.getElementById('emojiFunc');
-        常量 图片功能 = 文档.getElementById('imgFunc');
+        const atFunc = document.getElementById('atFunc');
+        const emojiFunc = document.getElementById('emojiFunc');
+        const imgFunc = document.getElementById('imgFunc');
 
         // @功能：点击插入@符号
-        atFunc.addEventListener('点击', () => {
-            评论输入.焦点();
-            常量 cursorPos = 评论输入.selectionStart;
-            常量 val = 评论输入.value;
-            评论输入.value = val.slice(0, cursorPos) + '@' + val.slice(cursorPos);
-            评论输入.selectionStart = 评论输入.selectionEnd = cursorPos + 1;
+        atFunc.addEventListener('click', () => {
+            commentInput.focus();
+            const cursorPos = commentInput.selectionStart;
+            const val = commentInput.value;
+            commentInput.value = val.slice(0, cursorPos) + '@' + val.slice(cursorPos);
+            commentInput.selectionStart = commentInput.selectionEnd = cursorPos + 1;
         });
 
         // 表情功能：仅点击聚焦
-        emojiFunc.addEventListener('点击', () => {
-            评论输入.焦点();
+        emojiFunc.addEventListener('click', () => {
+            commentInput.focus();
         });
 
         // 发图功能：仅点击聚焦
-        图片功能.addEventListener('点击', () => {
-            评论输入.焦点();
+        imgFunc.addEventListener('click', () => {
+            commentInput.focus();
         });
 
         // 展开更多评论
-        常量 展开按钮 = 文档.querySelector('.expand-btn');
-        展开按钮.addEventListener('点击', () => {
-            展开按钮.textContent = '已显示全部评论';
-            展开按钮.disabled = true;
-            展开按钮.style.color = 'var(--text-light)';
+        const expandBtn = document.querySelector('.expand-btn');
+        expandBtn.addEventListener('click', () => {
+            expandBtn.textContent = '已显示全部评论';
+            expandBtn.disabled = true;
+            expandBtn.style.color = 'var(--text-light)';
         });
 
         // 顶部消息/个人中心图标：仅保留点击交互（无实际跳转）
-        常量 msgIcon = 文档.getElementById('msgIcon');
-        常量 userIcon = 文档.getElementById('userIcon');
+        const msgIcon = document.getElementById('msgIcon');
+        const userIcon = document.getElementById('userIcon');
         
-        msgIcon.addEventListener('点击', () => {
+        msgIcon.addEventListener('click', () => {
             // 仅保留点击响应，无弹窗/跳转逻辑
-            msgIcon.焦点();
+            msgIcon.focus();
         });
         
-        userIcon.addEventListener('点击', () => {
+        userIcon.addEventListener('click', () => {
             // 仅保留点击响应，无弹窗/跳转逻辑
-            userIcon.焦点();
+            userIcon.focus();
         });
     </script>
 </body>
