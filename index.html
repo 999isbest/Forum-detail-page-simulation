@@ -28,12 +28,19 @@
             --hover-color: #f0f2f5;
             --author-tag-bg: #4a6cf7; /* 发帖者标识蓝底 */
             --author-tag-text: #fff;   /* 发帖者标识白字 */
+            /* 浅蓝色背景文字框配色 */
+            --tooltip-bg: #e0f7ff;
+            --tooltip-border: #b3e5fc;
+            --tooltip-text: #01579b;
         }
 
         body {
             background-color: var(--bg-main);
             color: var(--text-main);
             padding-top: 70px; /* 给固定导航栏留空间 */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         /* 1. 固定导航区 */
@@ -158,6 +165,7 @@
             grid-template-columns: 2fr 1fr;
             gap: 20px;
             padding: 0 20px;
+            flex: 1;
         }
 
         /* 左侧核心内容区 */
@@ -435,6 +443,107 @@
             padding-left: 40px;
         }
 
+        /* 浅蓝色背景文字框样式 */
+        .tooltip-box {
+            background-color: var(--tooltip-bg);
+            border: 1px solid var(--tooltip-border);
+            color: var(--tooltip-text);
+            padding: 2px 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: inline-block;
+            margin: 0 2px;
+            transition: all 0.2s ease;
+        }
+
+        .tooltip-box:hover {
+            background-color: #b3e5fc;
+            transform: scale(1.02);
+        }
+
+        /* 弹窗样式（保留居中、字号+2） */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            max-width: 500px;
+            width: 90%;
+            font-size: 18px; /* 字号+2 */
+            line-height: 1.8;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+            position: relative;
+            text-align: center; /* 居中 */
+        }
+
+        .modal-overlay.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 22px; /* 字号+2 */
+            color: #666;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 5px;
+        }
+
+        .modal-close:hover {
+            color: #333;
+        }
+
+        /* 新增：网页底部深入调查按钮容器+样式 */
+        .footer-investigate {
+            width: 100%;
+            padding: 30px 20px;
+            background-color: var(--bg-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .footer-investigate-btn {
+            background: var(--primary-gradient);
+            color: #fff;
+            border: none;
+            border-radius: 24px;
+            padding: 12px 32px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(74, 108, 247, 0.2);
+        }
+        .footer-investigate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(74, 108, 247, 0.3);
+        }
+
         /* 响应式适配 */
         @media (max-width: 992px) {
             .container {
@@ -463,6 +572,18 @@
             }
             .nav-icon {
                 font-size: 18px;
+            }
+            .modal-content {
+                padding: 15px 20px;
+                font-size: 16px; /* 移动端字号+2 */
+            }
+            .modal-close {
+                font-size: 20px;
+            }
+            /* 移动端底部按钮适配 */
+            .footer-investigate-btn {
+                padding: 10px 24px;
+                font-size: 16px;
             }
         }
     </style>
@@ -512,7 +633,9 @@
                 <button class="carousel-btn next-btn">&gt;</button>
             </div>
             <div class="post-content">
-                <h1 class="post-title">得知自己是人类，哭了整整一个下午……</h1>
+                <h1 class="post-title">
+                    <span class="tooltip-box" data-modal-content="发帖者无厘头的趣味分享">得知自己是人类，哭了整整一个下午……</span>
+                </h1>
                 <div class="post-body">
                     <p>从昨天下午到现在，我真的…… 哭到抽搐，嗓子像被砂纸刮过，眼泪把整张床单都打湿了，眼角肿得像刚做完拉皮手术一样。</p>
                     <p>两周前，我只是出于自嘲，给自己做了一个 DNA 检测。我一直以为，我可能是某种老鼠、臭虫，或某种社会边角料。毕竟，从小到大我就不觉得自己 “属于人类” 这个群体。没有人在意我，他们都不喜欢我，见到我都唯恐避之不及。</p>
@@ -570,7 +693,9 @@
                             </div>
                             <span class="comment-time">2小时前</span>
                         </div>
-                        <div class="comment-content">请问参考文献是什么？</div>
+                        <div class="comment-content">
+                            <span class="tooltip-box" data-modal-content="网友对抽象内容的趣味回复">请问参考文献是什么？</span>
+                        </div>
                         <div class="comment-replies">
                             <div class="reply-item">
                                 <img src="https://picsum.photos/seed/author/32/32" alt="头像" class="avatar">
@@ -596,7 +721,7 @@
                             </div>
                             <span class="comment-time">1小时前</span>
                         </div>
-                        <div class="comment-content">快来看合影参考文献！@宇宙无敌美少女</div>
+                        <div class="comment-content">快来合影参考文献！@宇宙无敌美少女</div>
                         <div class="comment-replies">
                             <div class="reply-item">
                                 <img src="https://picsum.photos/seed/comment3/32/32" alt="头像" class="avatar">
@@ -616,7 +741,9 @@
                             </div>
                             <span class="comment-time">1小时前</span>
                         </div>
-                        <div class="comment-content">家人们，我已经帮你们整理好了参考文献的格式，不用感谢我哈！参考文献[1]：《得知自己是人类，哭了一下午》</div>
+                        <div class="comment-content">家人们，我已经帮你们整理好了参考文献的格式，不用感谢我哈！
+                            <span class="tooltip-box" data-modal-content="将具有强烈反差的学术格式与抽象内容相结合，产生了独特的趣味性">参考文献[1]：《得知自己是人类，哭了一下午》</span>
+                        </div>
                         <div class="comment-replies">
                             <div class="reply-item">
                                 <img src="https://picsum.photos/seed/comment5/32/32" alt="头像" class="avatar">
@@ -674,7 +801,9 @@
                             </div>
                             <span class="comment-time">30分钟前</span>
                         </div>
-                        <div class="comment-content">得知自己是動物界脊索動物門哺乳綱靈長目人科人屬人類，哭了一下午......</div>
+                        <div class="comment-content">
+                            <span class="tooltip-box" data-modal-content="网友对原帖的二次创作">得知自己是動物界脊索動物門哺乳綱靈長目人科人屬人類，哭了一下午......</span>
+                        </div>
                         <div class="comment-replies">
                             <div class="reply-item">
                                 <img src="https://picsum.photos/seed/comment9/32/32" alt="头像" class="avatar">
@@ -700,6 +829,19 @@
                     <button class="expand-btn">展开更多评论</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- 新增：网页底部居中 深入调查按钮 -->
+    <div class="footer-investigate">
+        <button class="footer-investigate-btn" id="footerInvestigateBtn">阅读完毕，开启深入调查</button>
+    </div>
+
+    <!-- 弹窗容器 -->
+    <div class="modal-overlay" id="modalOverlay">
+        <button class="modal-close" id="modalClose">&times;</button>
+        <div class="modal-content" id="modalContent">
+            <!-- 弹窗内容动态生成 -->
         </div>
     </div>
 
@@ -742,15 +884,9 @@
             commentInput.selectionStart = commentInput.selectionEnd = cursorPos + 1;
         });
 
-        // 表情功能：仅点击聚焦
-        emojiFunc.addEventListener('click', () => {
-            commentInput.focus();
-        });
-
-        // 发图功能：仅点击聚焦
-        imgFunc.addEventListener('click', () => {
-            commentInput.focus();
-        });
+        // 表情/发图功能：仅点击聚焦
+        emojiFunc.addEventListener('click', () => commentInput.focus());
+        imgFunc.addEventListener('click', () => commentInput.focus());
 
         // 展开更多评论
         const expandBtn = document.querySelector('.expand-btn');
@@ -760,18 +896,46 @@
             expandBtn.style.color = 'var(--text-light)';
         });
 
-        // 顶部消息/个人中心图标：仅保留点击交互（无实际跳转）
+        // 顶部消息/个人中心图标：仅保留点击交互
         const msgIcon = document.getElementById('msgIcon');
         const userIcon = document.getElementById('userIcon');
-        
-        msgIcon.addEventListener('click', () => {
-            // 仅保留点击响应，无弹窗/跳转逻辑
-            msgIcon.focus();
+        msgIcon.addEventListener('click', () => msgIcon.focus());
+        userIcon.addEventListener('click', () => userIcon.focus());
+
+        // 弹窗功能实现（移除按钮相关逻辑）
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalContent = document.getElementById('modalContent');
+        const modalClose = document.getElementById('modalClose');
+        const tooltipBoxes = document.querySelectorAll('.tooltip-box');
+
+        // 点击文字框打开弹窗
+        tooltipBoxes.forEach(box => {
+            box.addEventListener('click', () => {
+                const content = box.getAttribute('data-modal-content');
+                modalContent.innerHTML = `<p>${content}</p>`; // 仅渲染文本，无按钮
+                modalOverlay.classList.add('show');
+                document.body.style.overflow = 'hidden'; // 禁止页面滚动
+            });
         });
-        
-        userIcon.addEventListener('click', () => {
-            // 仅保留点击响应，无弹窗/跳转逻辑
-            userIcon.focus();
+
+        // 关闭弹窗函数
+        function closeModal() {
+            modalOverlay.classList.remove('show');
+            document.body.style.overflow = ''; // 恢复页面滚动
+            modalContent.innerHTML = ''; // 清空弹窗内容
+        }
+
+        // 弹窗关闭：按钮、遮罩、ESC键
+        modalClose.addEventListener('click', closeModal);
+        modalOverlay.addEventListener('click', (e) => e.target === modalOverlay && closeModal());
+        document.addEventListener('keydown',e)=>key==='Escape'&&modalOverlay.classList.contains('show')closeModal;
+
+        // 新增：底部深入调查按钮点击事件（预留拓展接口）
+        const footerInvestigateBtn = document.getElementById('footerInvestigateBtn');
+        footerInvestigateBtn.addEventListener('click', () => {
+            console.log('点击底部深入调查按钮，可在此添加自定义逻辑');
+            // 可添加：页面跳转、显示新内容、弹出新弹窗等操作
+            // 示例：alert('开启深入调查模式！');
         });
     </script>
 </body>
