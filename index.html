@@ -2,19 +2,29 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 核心优化：viewport适配旋转后的屏幕，禁止用户缩放 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' https://picsum.photos https://p3-flow-imagex-download-sign.byteimg.com data:; font-src 'self' https://cdn.bootcdn.net; connect-src 'self'; frame-src 'self' https://999isbest.github.io;">
     <title>得知自己是人类，哭了整整一个下午…… - 鸣屿论坛</title>
     <style>
-        /* 全局样式重置 */
+        /* 全局样式重置 - 优化盒模型和触控点击 */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: "Microsoft Yahei", "PingFang SC", sans-serif;
+            /* 优化手机端点击高亮 */
+            -webkit-tap-highlight-color: transparent;
+            tap-highlight-color: transparent;
+            /* 禁止文本选中干扰操作 */
+            user-select: none;
+        }
+        /* 可输入/可阅读区域恢复文本选中 */
+        input, textarea, p, h1, .comment-content, .modal-content {
+            user-select: text;
         }
 
-        /* 核心配色：蓝紫渐变 */
+        /* 核心配色保留 */
         :root {
             --primary-gradient: linear-gradient(135deg, #4a6cf7 0%, #8b5cf6 100%);
             --primary-blue: #4a6cf7;
@@ -32,18 +42,24 @@
             --tooltip-bg: #e0f7ff;
             --tooltip-border: #b3e5fc;
             --tooltip-text: #01579b;
+            /* 新增：手机端触控最小点击区域 */
+            --min-touch-size: 44px;
         }
 
-        /* 新增：根容器，用于整体旋转 */
+        /* 根容器 - 旋转核心，优化滚动和层级 */
         #page-wrapper {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            overflow: auto;
+            overflow-y: auto;
+            overflow-x: hidden;
             transition: all 0.3s ease;
             z-index: 1;
+            /* 优化滚动体验 */
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
         }
 
         body {
@@ -53,9 +69,11 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            /* 禁止body滚动，由根容器接管 */
+            overflow: hidden;
         }
 
-        /* 1. 固定导航区 */
+        /* 1. 固定导航区 - 手机端核心优化：放大图标、精简布局、提升点击区 */
         .navbar {
             position: fixed;
             top: 0;
@@ -67,7 +85,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 20px;
+            padding: 0 15px;
             z-index: 999;
         }
 
@@ -78,15 +96,15 @@
         }
 
         .logo-icon {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             background: var(--primary-gradient);
-            border-radius: 8px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #fff;
-            font-size: 20px;
+            font-size: 22px;
             font-weight: bold;
         }
 
@@ -101,20 +119,23 @@
 
         .search-container {
             flex: 1;
-            max-width: 600px;
+            max-width: 500px;
             margin: 0 auto;
             position: relative;
+            padding: 0 10px;
         }
 
         .search-input {
             width: 100%;
-            height: 40px;
+            height: 44px;
             border: 1px solid var(--border-color);
-            border-radius: 20px;
+            border-radius: 22px;
             padding: 0 20px;
-            font-size: 14px;
+            font-size: 16px;
             outline: none;
             transition: all 0.3s;
+            /* 优化输入框光标 */
+            caret-color: var(--primary-blue);
         }
 
         .search-input:focus {
@@ -124,15 +145,16 @@
 
         .search-suggestions {
             position: absolute;
-            top: 45px;
-            left: 0;
-            right: 0;
+            top: 50px;
+            left: 10px;
+            right: 10px;
             background: #fff;
-            border-radius: 8px;
+            border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             padding: 10px 0;
             display: none;
             z-index: 998;
+            font-size: 16px;
         }
 
         .search-suggestions.show {
@@ -140,8 +162,8 @@
         }
 
         .suggestion-item {
-            padding: 10px 20px;
-            font-size: 14px;
+            padding: 12px 20px;
+            font-size: 16px;
             cursor: pointer;
         }
 
@@ -149,51 +171,55 @@
             background-color: var(--hover-color);
         }
 
-        /* 顶部右上角：消息+个人中心图标 */
+        /* 顶部右上角：消息+个人中心图标 - 放大点击区域 */
         .nav-right {
             display: flex;
             align-items: center;
             gap: 20px;
         }
         .nav-icon {
-            font-size: 20px;
+            font-size: 24px;
             color: var(--text-secondary);
             cursor: pointer;
-            width: 24px;
-            height: 24px;
+            width: var(--min-touch-size);
+            height: var(--min-touch-size);
             display: flex;
             align-items: center;
             justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
         }
         .nav-icon:hover {
             color: var(--primary-blue);
+            background-color: var(--hover-color);
         }
 
-        /* 2. 核心布局：栅格化双栏 */
+        /* 2. 核心布局：栅格化双栏 - 优化间距和自适应 */
         .container {
             max-width: 1200px;
-            margin: 20px auto;
+            margin: 15px auto;
             display: grid;
             grid-template-columns: 2fr 1fr;
-            gap: 20px;
-            padding: 0 20px;
+            gap: 15px;
+            padding: 0 15px;
             flex: 1;
         }
 
-        /* 左侧核心内容区 */
+        /* 左侧核心内容区 - 优化圆角和阴影，更贴合手机视觉 */
         .content-main {
             background: var(--bg-card);
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
             overflow: hidden;
         }
 
-        /* 图片展示区（移除轮播相关无用样式） */
+        /* 图片展示区 - 核心优化：适配旋转后屏幕，降低高度，优化加载 */
         .image-carousel {
             position: relative;
             width: 100%;
-            height: 500px;
+            height: 220px;
             overflow: hidden;
+            background-color: #f8f8f8;
         }
 
         .carousel-item {
@@ -202,53 +228,80 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #f0f0f0;
         }
 
         .carousel-img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
-            background: #f8f8f8 url('https://picsum.photos/800/500?grayscale') no-repeat center;
+            object-fit: cover;
+            /* 优化图片加载过渡 */
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .carousel-img.loaded {
+            opacity: 1;
         }
 
-        /* 帖子内容区 */
+        /* 帖子内容区 - 放大字体、增加内边距、优化行高 */
         .post-content {
-            padding: 20px;
+            padding: 20px 18px;
         }
 
         .post-title {
             font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            line-height: 1.4;
+            font-weight: 700;
+            margin-bottom: 18px;
+            line-height: 1.5;
         }
 
         .post-body {
-            font-size: 16px;
-            line-height: 1.8;
+            font-size: 17px;
+            line-height: 1.85;
             color: var(--text-main);
             margin-bottom: 20px;
         }
 
         .post-body p {
-            margin-bottom: 15px;
+            margin-bottom: 18px;
+        }
+        /* 蓝色文字框 - 手机端优化：放大尺寸、增加内边距、提升点击体验 */
+        .tooltip-box {
+            background-color: var(--tooltip-bg);
+            border: 1px solid var(--tooltip-border);
+            color: var(--tooltip-text);
+            padding: 4px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-block;
+            margin: 0 3px;
+            transition: all 0.2s ease;
+            z-index: 100;
+            position: relative;
+            font-size: 16px;
+            /* 触控最小点击区 */
+            min-height: 32px;
+            line-height: 1.4;
+        }
+        .tooltip-box:hover {
+            background-color: #b3e5fc;
+            transform: scale(1.03);
         }
 
         .post-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-bottom: 15px;
         }
 
         .tag {
-            padding: 5px 12px;
+            padding: 7px 15px;
             background-color: var(--hover-color);
-            border-radius: 16px;
-            font-size: 14px;
+            border-radius: 20px;
+            font-size: 15px;
             color: var(--primary-purple);
             text-decoration: none;
+            white-space: nowrap;
         }
 
         .tag:hover {
@@ -256,82 +309,89 @@
             color: #fff;
         }
 
-        /* 右侧互动区：仅保留评论区 */
+        /* 右侧互动区：仅保留评论区 - 优化层级和间距 */
         .content-side {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
         }
 
-        /* 评论区 */
+        /* 评论区 - 核心优化：放大字体、增加内边距、优化触控 */
         .comment-section {
             background: var(--bg-card);
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            padding: 18px;
             height: fit-content;
         }
 
-        /* 评论输入框及功能栏 */
+        /* 评论输入框及功能栏 - 放大输入框、优化功能按钮 */
         .comment-input-wrapper {
             margin-bottom: 20px;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 12px;
             overflow: hidden;
         }
         .comment-func-bar {
             display: flex;
             align-items: center;
-            padding: 8px 15px;
+            padding: 10px 18px;
             border-bottom: 1px solid var(--border-color);
-            gap: 20px;
+            gap: 25px;
         }
         .func-item {
             display: flex;
             align-items: center;
-            font-size: 14px;
+            font-size: 20px;
             color: var(--text-secondary);
             cursor: pointer;
-            width: 20px;
+            width: var(--min-touch-size);
+            height: 30px;
+            justify-content: center;
         }
         .func-item:hover {
             color: var(--primary-blue);
         }
         .comment-input {
             width: 100%;
-            height: 60px;
+            height: 70px;
             border: none;
-            padding: 10px 15px;
-            font-size: 14px;
+            padding: 15px 18px;
+            font-size: 16px;
             outline: none;
             resize: none;
             background: transparent;
+            caret-color: var(--primary-blue);
+            line-height: 1.5;
         }
         .comment-input::placeholder {
             color: var(--text-light);
         }
         .comment-submit {
-            margin-top: 8px;
+            margin-top: 10px;
             text-align: right;
         }
         .submit-btn {
-            padding: 6px 16px;
+            padding: 9px 20px;
             background: var(--primary-gradient);
             color: #fff;
             border: none;
-            border-radius: 20px;
-            font-size: 14px;
+            border-radius: 22px;
+            font-size: 16px;
             cursor: pointer;
+            transition: all 0.2s;
+            min-width: 90px;
         }
         .submit-btn:disabled {
             background: var(--border-color);
             cursor: not-allowed;
+            color: #ccc;
         }
 
-        /* 评论通用样式 */
+        /* 评论通用样式 - 放大头像、字体，优化间距 */
         .avatar {
-            width: 32px;
-            height: 32px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             object-fit: cover;
             background: var(--hover-color);
@@ -340,29 +400,29 @@
         .comment-header {
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
+            gap: 10px;
+            margin-bottom: 10px;
         }
         .comment-author-box {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
         }
         .comment-author {
-            font-size: 14px;
-            font-weight: 500;
+            font-size: 16px;
+            font-weight: 600;
             color: var(--text-main);
         }
         .author-tag {
-            font-size: 10px;
+            font-size: 12px;
             color: var(--author-tag-text);
             background: var(--author-tag-bg);
-            padding: 1px 4px;
-            border-radius: 3px;
+            padding: 2px 6px;
+            border-radius: 4px;
             line-height: 1;
         }
         .comment-time {
-            font-size: 12px;
+            font-size: 13px;
             color: var(--text-light);
             margin-left: auto;
         }
@@ -373,81 +433,66 @@
         }
         .comment-item {
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 15px;
+            padding-bottom: 18px;
         }
         .comment-item:last-child {
             border-bottom: none;
         }
         .comment-content {
-            font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 10px;
-            padding-left: 40px;
+            font-size: 15px;
+            line-height: 1.7;
+            margin-bottom: 12px;
+            padding-left: 50px;
         }
-        /* 回复区样式 */
+        /* 回复区样式 - 优化背景和间距，放大字体 */
         .comment-replies {
-            margin-left: 40px;
-            margin-top: 10px;
+            margin-left: 50px;
+            margin-top: 12px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 15px;
         }
         .reply-item {
             display: flex;
             align-items: flex-start;
-            gap: 8px;
-            font-size: 13px;
-            line-height: 1.5;
+            gap: 10px;
+            font-size: 14px;
+            line-height: 1.6;
         }
         .reply-content {
             background: var(--hover-color);
-            padding: 8px 12px;
-            border-radius: 8px;
+            padding: 10px 14px;
+            border-radius: 10px;
             color: var(--text-secondary);
+            flex: 1;
         }
         .reply-at {
             color: var(--text-link);
-            font-weight: 500;
+            font-weight: 600;
         }
         .expand-btn {
             background: none;
             border: none;
             color: var(--primary-blue);
-            font-size: 13px;
+            font-size: 15px;
             cursor: pointer;
-            margin-top: 5px;
-            padding-left: 40px;
+            margin-top: 8px;
+            padding: 8px 0;
+            width: 100%;
+            text-align: left;
+        }
+        .expand-btn:hover {
+            color: var(--primary-purple);
         }
 
-        /* 浅蓝色背景文字框样式 */
-        .tooltip-box {
-            background-color: var(--tooltip-bg);
-            border: 1px solid var(--tooltip-border);
-            color: var(--tooltip-text);
-            padding: 2px 6px;
-            border-radius: 4px;
-            cursor: pointer;
-            display: inline-block;
-            margin: 0 2px;
-            transition: all 0.2s ease;
-            z-index: 100;
-            position: relative;
-            user-select: none;
-        }
-
-        .tooltip-box:hover {
-            background-color: #b3e5fc;
-            transform: scale(1.02);
-        }
-
-        /* 弹窗样式 */
+        /* 弹窗样式 - 手机端核心优化：放大尺寸、优化圆角、提升触控 */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.6);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -455,6 +500,8 @@
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
+            /* 优化弹窗遮罩触控 */
+            touch-action: none;
         }
 
         .modal-overlay.active {
@@ -464,13 +511,13 @@
 
         .modal-content {
             background-color: white;
-            padding: 20px 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            max-width: 500px;
-            width: 90%;
+            padding: 25px 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            max-width: 90%;
+            width: 450px;
             font-size: 18px;
-            line-height: 1.8;
+            line-height: 1.9;
             transform: translateY(-20px);
             transition: all 0.3s ease;
             position: relative;
@@ -485,129 +532,80 @@
             position: absolute;
             top: 15px;
             right: 15px;
-            font-size: 22px;
+            font-size: 28px;
             color: #666;
             cursor: pointer;
             background: none;
             border: none;
-            padding: 5px;
+            padding: 8px;
             z-index: 1001;
+            /* 放大关闭按钮点击区 */
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
         }
 
         .modal-close:hover {
             color: #333;
+            background-color: var(--hover-color);
         }
 
-        /* 网页底部深入调查按钮 */
+        /* 网页底部深入调查按钮 - 优化尺寸和触控 */
         .footer-investigate {
             width: 100%;
-            padding: 30px 20px;
+            padding: 25px 20px;
             background-color: var(--bg-main);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-top: 20px;
+            margin-top: 15px;
         }
         .footer-investigate-btn {
             background: var(--primary-gradient);
             color: #fff;
             border: none;
-            border-radius: 24px;
-            padding: 12px 32px;
+            border-radius: 28px;
+            padding: 15px 40px;
             font-size: 18px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(74, 108, 247, 0.2);
+            box-shadow: 0 6px 15px rgba(74, 108, 247, 0.2);
             user-select: none;
+            /* 最小触控区 */
+            min-width: 200px;
+            text-align: center;
         }
         .footer-investigate-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 6px 16px rgba(74, 108, 247, 0.3);
+            box-shadow: 0 8px 20px rgba(74, 108, 247, 0.3);
         }
 
-        /* 响应式适配 - 修改核心部分 */
+        /* 平板端适配（992px以下）- 轻量化过渡 */
         @media (max-width: 992px) {
-            /* 保留双栏布局，调整列宽比例和间距 */
             .container {
-                grid-template-columns: 1.2fr 1fr;
-                gap: 10px;
-                padding: 0 10px;
-            }
-            .image-carousel {
-                height: 250px; /* 进一步缩小图片高度适配手机 */
-            }
-            /* 缩小帖子内容内边距 */
-            .post-content {
-                padding: 10px;
-            }
-            /* 缩小评论区内边距 */
-            .comment-section {
-                padding: 10px;
-            }
-        }
-
-        @media (max-width: 576px) {
-            /* 手机端依然保持双栏，进一步优化 */
-            .container {
-                grid-template-columns: 1.1fr 1fr;
-                gap: 8px;
-                margin: 10px auto;
+                grid-template-columns: 1.3fr 1fr;
+                gap: 12px;
+                padding: 0 12px;
+                margin: 12px auto;
             }
             .image-carousel {
                 height: 200px;
             }
-            .post-title {
-                font-size: 16px; /* 更小的标题字体 */
+            .post-content {
+                padding: 18px 15px;
             }
-            .post-body {
-                font-size: 13px; /* 更小的正文字体 */
-                line-height: 1.6;
-            }
-            .navbar {
-                padding: 0 10px;
-                height: 60px; /* 缩小导航栏高度 */
-            }
-            .logo-text {
-                display: none;
-            }
-            .nav-icon {
-                font-size: 18px;
-            }
-            .modal-content {
-                padding: 15px 20px;
-                font-size: 16px;
-            }
-            .modal-close {
-                font-size: 20px;
-            }
-            .footer-investigate-btn {
-                padding: 10px 24px;
-                font-size: 16px;
-            }
-            /* 手机端缩小评论相关字体和间距 */
-            .comment-author {
-                font-size: 12px;
-            }
-            .comment-time {
-                font-size: 10px;
-            }
-            .comment-content {
-                font-size: 12px;
-                padding-left: 30px;
-            }
-            .reply-item {
-                font-size: 11px;
-            }
-            .comment-list {
-                gap: 10px;
-            }
-            .comment-item {
-                padding-bottom: 8px;
+            .comment-section {
+                padding: 15px;
             }
         }
 
-        /* 新增：手机端整体旋转90度样式 */
+        /* 手机端核心适配（576px以下）- 旋转+布局全优化 */
         @media (max-width: 576px) {
+            /* 根容器旋转90度 - 核心保留，优化适配 */
             #page-wrapper {
                 width: 100vh;
                 height: 100vw;
@@ -616,7 +614,7 @@
                 -webkit-transform: rotate(90deg) translateY(-100%);
                 -webkit-transform-origin: top left;
             }
-            /* 弹窗同步旋转，保持正常显示 */
+            /* 弹窗同步旋转，完全贴合屏幕 */
             .modal-overlay {
                 transform: rotate(90deg) translateY(-100%);
                 transform-origin: top left;
@@ -624,6 +622,132 @@
                 -webkit-transform-origin: top left;
                 width: 100vh;
                 height: 100vw;
+                touch-action: auto;
+            }
+
+            /* 导航栏 - 极致精简，适配旋转后高度 */
+            .navbar {
+                padding: 0 10px;
+                height: 65px;
+            }
+            .logo-text {
+                display: none;
+            }
+            .search-container {
+                max-width: 400px;
+            }
+            .search-input {
+                height: 40px;
+                font-size: 15px;
+            }
+
+            /* 核心布局 - 双栏微调，减少间距，避免挤压 */
+            .container {
+                grid-template-columns: 1.1fr 1fr;
+                gap: 10px;
+                margin: 10px auto;
+                padding: 0 10px;
+            }
+
+            /* 图片区 - 适配旋转后屏幕，进一步优化高度 */
+            .image-carousel {
+                height: 180px;
+            }
+
+            /* 帖子内容 - 字体适配，减少冗余间距 */
+            .post-title {
+                font-size: 19px;
+                margin-bottom: 15px;
+            }
+            .post-body {
+                font-size: 16px;
+                line-height: 1.8;
+                margin-bottom: 18px;
+            }
+            .post-body p {
+                margin-bottom: 15px;
+            }
+            .tag {
+                padding: 6px 12px;
+                font-size: 14px;
+            }
+
+            /* 评论区 - 轻量化适配，保留核心体验 */
+            .comment-section {
+                padding: 15px 12px;
+            }
+            .comment-input {
+                height: 65px;
+                padding: 12px 15px;
+                font-size: 15px;
+            }
+            .submit-btn {
+                padding: 8px 18px;
+                font-size: 15px;
+            }
+            .comment-author {
+                font-size: 15px;
+            }
+            .comment-time {
+                font-size: 12px;
+            }
+            .comment-content {
+                font-size: 14px;
+                padding-left: 45px;
+                line-height: 1.65;
+            }
+            .comment-replies {
+                margin-left: 45px;
+                gap: 12px;
+            }
+            .reply-item {
+                font-size: 13px;
+            }
+            .reply-content {
+                padding: 8px 12px;
+            }
+
+            /* 弹窗 - 适配旋转后触控，微调尺寸 */
+            .modal-content {
+                padding: 22px 25px;
+                font-size: 17px;
+                max-width: 92%;
+            }
+            .modal-close {
+                font-size: 26px;
+                width: 40px;
+                height: 40px;
+            }
+
+            /* 底部按钮 - 适配旋转后屏幕，微调尺寸 */
+            .footer-investigate-btn {
+                padding: 13px 35px;
+                font-size: 17px;
+                min-width: 180px;
+            }
+        }
+
+        /* 小屏手机适配（375px以下，如SE/迷你机） */
+        @media (max-width: 375px) {
+            .container {
+                grid-template-columns: 1.05fr 1fr;
+            }
+            .image-carousel {
+                height: 160px;
+            }
+            .post-title {
+                font-size: 18px;
+            }
+            .post-body {
+                font-size: 15px;
+            }
+            .tooltip-box {
+                padding: 3px 7px;
+                font-size: 15px;
+            }
+            .footer-investigate-btn {
+                padding: 12px 30px;
+                font-size: 16px;
             }
         }
     </style>
@@ -631,7 +755,7 @@
     <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- 新增：根容器包裹所有内容 -->
+    <!-- 根容器包裹所有内容 -->
     <div id="page-wrapper">
         <!-- 1. 固定导航区 -->
         <nav class="navbar">
@@ -667,7 +791,8 @@
                         <img src="https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/fd62076a5b6a414fb3d9b4460ecdc7b4.jpg~tplv-a9rns2rl98-24:720:720.image?lk3s=8e244e95&rcl=20260117214814412F45B474C6832D43D2&rrcfp=8a172a1a&x-expires=1769262494&x-signature=UGOn%2FgRtPqY5M96igQR6cqHYC9s%3D" 
                              alt="老鼠基因检测插画" 
                              class="carousel-img"
-                             onerror="this.src='https://picsum.photos/800/500?grayscale';">
+                             onload="this.classList.add('loaded')"
+                             onerror="this.src='https://picsum.photos/800/500?grayscale';this.classList.add('loaded');">
                     </div>
                 </div>
                 <div class="post-content">
@@ -876,27 +1001,39 @@
     <script>
         // 等待DOM加载完成
         document.addEventListener('DOMContentLoaded', function() {
-            // 搜索框下拉推荐
+            // 搜索框下拉推荐 - 优化手机端触控
             const searchInput = document.getElementById('searchInput');
             const searchSuggestions = document.getElementById('searchSuggestions');
 
             searchInput.addEventListener('focus', () => searchSuggestions.classList.add('show'));
             searchInput.addEventListener('input', () => searchSuggestions.classList.add('show'));
+            // 手机端优化：点击推荐项后关闭下拉
+            document.querySelectorAll('.suggestion-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    searchInput.value = item.textContent;
+                    searchSuggestions.classList.remove('show');
+                });
+            });
+            // 点击外部关闭下拉，优化触控判断
             document.addEventListener('click', (e) => {
                 if (!searchInput.contains(e.target) && !searchSuggestions.contains(e.target)) {
                     searchSuggestions.classList.remove('show');
                 }
             });
 
-            // 评论输入框：输入内容激活发布按钮
+            // 评论输入框：输入内容激活发布按钮 - 优化手机端输入体验
             const commentInput = document.querySelector('.comment-input');
             const submitBtn = document.querySelector('.submit-btn');
 
             commentInput.addEventListener('input', () => {
                 submitBtn.disabled = commentInput.value.trim() === '';
             });
+            // 手机端优化：输入框聚焦时滚动到可视区
+            commentInput.addEventListener('focus', () => {
+                commentInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
 
-            // @功能：点击插入@符号
+            // @功能：点击插入@符号 - 优化手机端光标定位
             const atFunc = document.getElementById('atFunc');
             atFunc.addEventListener('click', () => {
                 commentInput.focus();
@@ -910,37 +1047,39 @@
             document.getElementById('emojiFunc').addEventListener('click', () => commentInput.focus());
             document.getElementById('imgFunc').addEventListener('click', () => commentInput.focus());
 
-            // 展开更多评论
+            // 展开更多评论 - 优化手机端点击反馈
             const expandBtn = document.querySelector('.expand-btn');
             expandBtn.addEventListener('click', () => {
                 expandBtn.textContent = '已显示全部评论';
                 expandBtn.disabled = true;
                 expandBtn.style.color = 'var(--text-light)';
+                expandBtn.style.cursor = 'default';
             });
 
-            // 弹窗功能
+            // 弹窗功能 - 优化手机端触控和滚动
             const modalOverlay = document.getElementById('modalOverlay');
             const modalContent = document.getElementById('modalContent');
             const modalClose = document.getElementById('modalClose');
             
-            // 打开弹窗
+            // 打开弹窗 - 优化手机端点击判断，防止误触
             document.addEventListener('click', function(e) {
                 if (e.target.classList.contains('tooltip-box')) {
                     const content = e.target.getAttribute('data-modal-content');
                     modalContent.innerHTML = `<p>${content}</p>`;
                     modalOverlay.classList.add('active');
-                    document.body.style.overflow = 'hidden';
+                    // 手机端：禁止根容器滚动
+                    document.getElementById('page-wrapper').style.overflow = 'hidden';
                 }
             });
 
-            // 关闭弹窗函数
+            // 关闭弹窗函数 - 恢复滚动
             function closeModal() {
                 modalOverlay.classList.remove('active');
-                document.body.style.overflow = '';
+                document.getElementById('page-wrapper').style.overflow = 'auto';
                 modalContent.innerHTML = '';
             }
 
-            // 弹窗关闭：按钮、遮罩、ESC键
+            // 弹窗关闭：按钮、遮罩、ESC键、手机端点击空白处
             modalClose.addEventListener('click', closeModal);
             modalOverlay.addEventListener('click', function(e) {
                 if (e.target === modalOverlay) closeModal();
@@ -949,33 +1088,53 @@
                 if (e.key === 'Escape' && modalOverlay.classList.contains('active')) closeModal();
             });
 
-          // 底部按钮跳转（当前页面跳转）
-document.getElementById('footerInvestigateBtn').addEventListener('click', function() {
-    // 直接修改当前页面的URL，实现本页面跳转
-    window.location.href = 'https://999isbest.github.io/Information-Analysis-System-Reasons-for-its-Popularity/';
-});
+            // 底部按钮跳转 - 优化手机端点击反馈
+            document.getElementById('footerInvestigateBtn').addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    window.location.href = 'https://999isbest.github.io/Information-Analysis-System-Reasons-for-its-Popularity/';
+                }, 150);
+            });
 
-            // 新增：处理屏幕旋转事件，确保旋转效果稳定
+            // 处理屏幕旋转/尺寸变化，确保旋转效果稳定 - 优化手机端适配精度
             function handleOrientationChange() {
                 const wrapper = document.getElementById('page-wrapper');
                 const modal = document.querySelector('.modal-overlay');
                 const isMobile = window.innerWidth <= 576;
                 if (isMobile) {
-                    wrapper.style.width = `${window.innerHeight}px`;
-                    wrapper.style.height = `${window.innerWidth}px`;
-                    modal.style.width = `${window.innerHeight}px`;
-                    modal.style.height = `${window.innerWidth}px`;
+                    // 精准计算旋转后的宽高，适配不同手机屏幕
+                    const vh = window.innerHeight;
+                    const vw = window.innerWidth;
+                    wrapper.style.width = `${vh}px`;
+                    wrapper.style.height = `${vw}px`;
+                    modal.style.width = `${vh}px`;
+                    modal.style.height = `${vw}px`;
                 } else {
                     wrapper.style.width = '100vw';
                     wrapper.style.height = '100vh';
                     wrapper.style.transform = 'none';
                     modal.style.transform = 'none';
+                    modal.style.width = '100vw';
+                    modal.style.height = '100vh';
                 }
             }
 
-            window.addEventListener('resize', handleOrientationChange);
+            // 监听屏幕变化，优化防抖
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(handleOrientationChange, 100);
+            });
             window.addEventListener('orientationchange', handleOrientationChange);
             handleOrientationChange(); // 初始化执行一次
+
+            // 图片加载失败兜底 - 优化手机端图片体验
+            document.querySelectorAll('img').forEach(img => {
+                img.addEventListener('error', function() {
+                    this.src = `https://picsum.photos/seed/${this.alt}/32/32`;
+                    this.classList.add('loaded');
+                });
+            });
         });
     </script>
 </body>
