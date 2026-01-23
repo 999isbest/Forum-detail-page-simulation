@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' https://picsum.photos https://p3-flow-imagex-download-sign.byteimg.com data:; font-src 'self' https://cdn.bootcdn.net; connect-src 'self'; frame-src 'self' https://999isbest.github.io;">
     <title>得知自己是人类，哭了整整一个下午…… - 鸣屿论坛</title>
     <style>
         /* 全局样式重置 */
@@ -30,8 +29,6 @@
             --author-tag-bg: #4a6cf7; /* 发帖者标识蓝底 */
             --author-tag-text: #fff;   /* 发帖者标识白字 */
             /* 浅蓝色背景文字框配色 */
-            --author-tag-bg: #4a6cf7;
-            --author-tag-text: #fff;
             --tooltip-bg: #e0f7ff;
             --tooltip-border: #b3e5fc;
             --tooltip-text: #01579b;
@@ -41,7 +38,6 @@
             background-color: var(--bg-main);
             color: var(--text-main);
             padding-top: 70px; /* 给固定导航栏留空间 */
-            padding-top: 70px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -181,7 +177,6 @@
         }
 
         /* 图片轮播区 */
-        /* 图片展示区（移除轮播相关无用样式） */
         .image-carousel {
             position: relative;
             width: 100%;
@@ -237,8 +232,6 @@
 
         .next-btn {
             right: 10px;
-            object-fit: contain;
-            background: #f8f8f8 url('https://picsum.photos/800/500?grayscale') no-repeat center;
         }
 
         /* 帖子内容区 */
@@ -286,7 +279,6 @@
         }
 
         /* 右侧互动区：仅保留评论区，移除相关推荐 */
-        /* 右侧互动区：仅保留评论区 */
         .content-side {
             display: flex;
             flex-direction: column;
@@ -324,7 +316,6 @@
             color: var(--text-secondary);
             cursor: pointer;
             width: 20px; /* 固定宽度保证图标对齐 */
-            width: 20px;
         }
         .func-item:hover {
             color: var(--primary-blue);
@@ -361,7 +352,6 @@
         }
 
         /* 评论通用样式：头像、昵称、标识 */
-        /* 评论通用样式 */
         .avatar {
             width: 32px;
             height: 32px;
@@ -466,7 +456,6 @@
             transition: all 0.2s ease;
             z-index: 100;
             position: relative;
-            user-select: none;
         }
 
         .tooltip-box:hover {
@@ -475,7 +464,6 @@
         }
 
         /* 弹窗样式（保留居中、字号+2） */
-        /* 弹窗样式 */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -505,13 +493,11 @@
             max-width: 500px;
             width: 90%;
             font-size: 18px; /* 字号+2 */
-            font-size: 18px;
             line-height: 1.8;
             transform: translateY(-20px);
             transition: all 0.3s ease;
             position: relative;
             text-align: center; /* 居中 */
-            text-align: center;
         }
 
         .modal-overlay.active .modal-content {
@@ -523,7 +509,6 @@
             top: 15px;
             right: 15px;
             font-size: 22px; /* 字号+2 */
-            font-size: 22px;
             color: #666;
             cursor: pointer;
             background: none;
@@ -537,7 +522,6 @@
         }
 
         /* 新增：网页底部深入调查按钮容器+样式 */
-        /* 网页底部深入调查按钮 */
         .footer-investigate {
             width: 100%;
             padding: 30px 20px;
@@ -559,7 +543,6 @@
             box-shadow: 0 4px 12px rgba(74, 108, 247, 0.2);
             position: relative;
             z-index: 10;
-            user-select: none;
         }
         .footer-investigate-btn:hover {
             transform: translateY(-3px);
@@ -598,7 +581,6 @@
             .modal-content {
                 padding: 15px 20px;
                 font-size: 16px; /* 移动端字号+2 */
-                font-size: 16px;
             }
             .modal-close {
                 font-size: 20px;
@@ -644,7 +626,6 @@
     </nav>
 
     <!-- 2. 核心内容区：栅格化双栏 -->
-    <!-- 2. 核心内容区 -->
     <div class="container">
         <!-- 左侧核心内容展示区 -->
         <div class="content-main">
@@ -653,10 +634,6 @@
                 <!-- 最新版老鼠基因检测插画 -->
                 <div class="carousel-item">
                     <img src="https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/fd62076a5b6a414fb3d9b4460ecdc7b4.jpg~tplv-a9rns2rl98-24:720:720.image?lk3s=8e244e95&rcl=20260117214814412F45B474C6832D43D2&rrcfp=8a172a1a&x-expires=1769262494&x-signature=UGOn%2FgRtPqY5M96igQR6cqHYC9s%3D" alt="老鼠基因检测插画" class="carousel-img">
-                    <img src="https://p3-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/fd62076a5b6a414fb3d9b4460ecdc7b4.jpg~tplv-a9rns2rl98-24:720:720.image?lk3s=8e244e95&rcl=20260117214814412F45B474C6832D43D2&rrcfp=8a172a1a&x-expires=1769262494&x-signature=UGOn%2FgRtPqY5M96igQR6cqHYC9s%3D" 
-                         alt="老鼠基因检测插画" 
-                         class="carousel-img"
-                         onerror="this.src='https://picsum.photos/800/500?grayscale';">
                 </div>
                 <button class="carousel-btn next-btn">&gt;</button>
             </div>
@@ -871,18 +848,14 @@
         <div class="modal-content" id="modalContent">
             <!-- 弹窗内容动态生成 -->
         </div>
-        <div class="modal-content" id="modalContent"></div>
     </div>
 
     <script>
         // 确保页面完全加载
         window.onload = function() {
             console.log('页面完全加载完成');
-            
+
             // 搜索框即时下拉推荐
-        // 等待DOM加载完成
-        document.addEventListener('DOMContentLoaded', function() {
-            // 搜索框下拉推荐
             const searchInput = document.getElementById('searchInput');
             const searchSuggestions = document.getElementById('searchSuggestions');
 
@@ -904,16 +877,8 @@
                 prevBtn.style.display = 'none';
                 nextBtn.style.display = 'none';
             }
-            searchInput.addEventListener('focus', () => searchSuggestions.classList.add('show'));
-            searchInput.addEventListener('input', () => searchSuggestions.classList.add('show'));
-            document.addEventListener('click', (e) => {
-                if (!searchInput.contains(e.target) && !searchSuggestions.contains(e.target)) {
-                    searchSuggestions.classList.remove('show');
-                }
-            });
 
             // 评论输入框功能：输入内容激活发布按钮
-            // 评论输入框：输入内容激活发布按钮
             const commentInput = document.querySelector('.comment-input');
             const submitBtn = document.querySelector('.submit-btn');
 
@@ -927,9 +892,6 @@
             const atFunc = document.getElementById('atFunc');
             const emojiFunc = document.getElementById('emojiFunc');
             const imgFunc = document.getElementById('imgFunc');
-            commentInput.addEventListener('input', () => {
-                submitBtn.disabled = commentInput.value.trim() === '';
-            });
 
             // @功能：点击插入@符号
             if (atFunc && commentInput) {
@@ -941,14 +903,6 @@
                     commentInput.selectionStart = commentInput.selectionEnd = cursorPos + 1;
                 });
             }
-            const atFunc = document.getElementById('atFunc');
-            atFunc.addEventListener('click', () => {
-                commentInput.focus();
-                const cursorPos = commentInput.selectionStart;
-                const val = commentInput.value;
-                commentInput.value = val.slice(0, cursorPos) + '@' + val.slice(cursorPos);
-                commentInput.selectionStart = commentInput.selectionEnd = cursorPos + 1;
-            });
 
             // 表情/发图功能：仅点击聚焦
             if (emojiFunc && commentInput) {
@@ -957,17 +911,9 @@
             if (imgFunc && commentInput) {
                 imgFunc.addEventListener('click', () => commentInput.focus());
             }
-            // 表情/发图功能：点击聚焦
-            document.getElementById('emojiFunc').addEventListener('click', () => commentInput.focus());
-            document.getElementById('imgFunc').addEventListener('click', () => commentInput.focus());
 
             // 展开更多评论
             const expandBtn = document.querySelector('.expand-btn');
-            expandBtn.addEventListener('click', () => {
-                expandBtn.textContent = '已显示全部评论';
-                expandBtn.disabled = true;
-                expandBtn.style.color = 'var(--text-light)';
-            });
 
             if (expandBtn) {
                 expandBtn.addEventListener('click', () => {
@@ -989,7 +935,6 @@
             }
 
             // 弹窗功能实现 - 重写弹窗逻辑
-            // 弹窗功能
             const modalOverlay = document.getElementById('modalOverlay');
             const modalContent = document.getElementById('modalContent');
             const modalClose = document.getElementById('modalClose');
@@ -999,8 +944,6 @@
             console.log('找到的tooltip元素数量:', tooltipBoxes.length);
 
             // 强制绑定点击事件（使用事件委托）
-            
-            // 打开弹窗
             document.addEventListener('click', function(e) {
                 if (e.target.classList.contains('tooltip-box')) {
                     console.log('点击了tooltip框，内容:', e.target.getAttribute('data-modal-content'));
@@ -1022,7 +965,7 @@
             if (modalClose) {
                 modalClose.addEventListener('click', closeModal);
             }
-            
+
             if (modalOverlay) {
                 modalOverlay.addEventListener('click', function(e) {
                     if (e.target === modalOverlay) {
@@ -1030,16 +973,11 @@
                     }
                 });
             }
-            
-            modalClose.addEventListener('click', closeModal);
-            modalOverlay.addEventListener('click', function(e) {
-                if (e.target === modalOverlay) closeModal();
-            });
+
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
                     closeModal();
                 }
-                if (e.key === 'Escape' && modalOverlay.classList.contains('active')) closeModal();
             });
 
             // 修复底部按钮跳转功能
@@ -1049,35 +987,21 @@
                 // 移除所有现有事件监听（防止重复绑定）
                 const newBtn = footerInvestigateBtn.cloneNode(true);
                 footerInvestigateBtn.parentNode.replaceChild(newBtn, footerInvestigateBtn);
-                
+
                 // 重新绑定点击事件
                 newBtn.addEventListener('click', function(e) {
                     e.preventDefault();
-                    控制台.日志('点击了深入调查按钮，准备跳转');
-                    // 方案1：直接跳转
-                    窗口.打开('https://999isbest.github.io/Information-Analysis-System-Reasons-for-its-Popularity/', '_blank');
-                    
-                    // 方案2：如果方案1不行，使用备用方案
-                    // window.location.href = 'https://999isbest.github.io/Information-Analysis-System-Reasons-for-its-Popularity/';
-                    
+                    console.log('点击了深入调查按钮，准备跳转');
+                    //直接跳转
+                     window.location.href = 'https://999isbest.github.io/Information-Analysis-System-Reasons-for-its-Popularity/';
+
                     // 调试信息
                     console.log('跳转链接：https://999isbest.github.io/Information-Analysis-System-Reasons-for-its-Popularity/');
                 });
             }
-            
+
             console.log('所有脚本加载完成，事件绑定完毕');
         };
-            // 底部按钮跳转
-            document.getElementById('footerInvestigateBtn').addEventListener('click', function() {
-                const a = document.createElement('a');
-                a.href = 'https://999isbest.github.io/Information-Analysis-System-Reasons-for-its-Popularity/';
-                a.target = '_blank';
-                a.rel = 'noopener noreferrer';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            });
-        });
     </script>
 </body>
 </html>
