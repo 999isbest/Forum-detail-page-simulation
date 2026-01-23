@@ -2,7 +2,6 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <!-- 优化视口：禁止缩放，强制适配设备宽度，解决旋转后偏移 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' https://picsum.photos https://p3-flow-imagex-download-sign.byteimg.com data:; font-src 'self' https://cdn.bootcdn.net; connect-src 'self'; frame-src 'self' https://999isbest.github.io;">
     <title>得知自己是人类，哭了整整一个下午…… - 鸣屿论坛</title>
@@ -40,8 +39,8 @@
             background-color: var(--bg-main);
             color: var(--text-main);
             min-height: 100vh;
-            overflow: hidden; /* 禁止手机端整体滚动 */
-            touch-action: none; /* 禁止触摸默认行为，避免滑动偏移 */
+            overflow: hidden;
+            touch-action: none;
         }
 
         .page-container {
@@ -168,7 +167,7 @@
             color: var(--primary-blue);
         }
 
-        /* 2. 核心布局：栅格化双栏 */
+        /* 2. 核心布局：栅格化双栏 - 电脑端原样式 */
         .container {
             max-width: 1200px;
             margin: 20px auto;
@@ -179,12 +178,13 @@
             flex: 1;
         }
 
-        /* 左侧核心内容区 */
+        /* 左侧核心内容区 - 帖子 */
         .content-main {
             background: var(--bg-card);
             border-radius: 12px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.03);
             overflow: hidden;
+            height: fit-content;
         }
 
         /* 图片展示区 */
@@ -255,20 +255,22 @@
             color: #fff;
         }
 
-        /* 右侧互动区：仅保留评论区 */
+        /* 右侧互动区：评论区 */
         .content-side {
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
 
-        /* 评论区 */
         .comment-section {
             background: var(--bg-card);
             border-radius: 12px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.03);
             padding: 20px;
             height: fit-content;
+            max-height: calc(100vh - 110px);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         /* 评论输入框及功能栏 */
@@ -524,23 +526,20 @@
             box-shadow: 0 6px 16px rgba(74, 108, 247, 0.3);
         }
 
-        /* ========== 移动端旋转90度 + 完美居中核心代码 ========== */
+        /* ========== 移动端旋转90度 + 居中 + 左帖子右评论双栏核心 ========== */
         @media screen and (max-width: 768px), screen and (max-device-width: 768px) {
             /* 核心：旋转90度 + 绝对居中，适配所有手机尺寸 */
             .page-container {
-                transform: rotate(90deg);
-                transform-origin: center center; /* 以容器中心旋转，避免偏移 */
-                width: 100vh; /* 旋转后宽度=原屏幕高度 */
-                height: 100vw; /* 旋转后高度=原屏幕宽度 */
-                position: fixed;
-                top: 50%; /* 垂直居中 */
-                left: 50%; /* 水平居中 */
-                /* 反向偏移50%，实现完美居中 */
                 transform: rotate(90deg) translate(-50%, -50%);
+                transform-origin: center center;
+                width: 100vh;
+                height: 100vw;
+                position: fixed;
+                top: 50%;
+                left: 50%;
                 padding-top: 0;
-                margin: 0; /* 清空原有margin，避免冲突 */
-                overflow-y: auto; /* 内部滚动，不影响整体 */
-                -webkit-overflow-scrolling: touch; /* 开启手机端顺滑滚动 */
+                margin: 0;
+                overflow: hidden;
             }
 
             /* 导航栏适配旋转后的居中布局 */
@@ -550,118 +549,180 @@
                 left: 0;
                 right: 0;
                 width: 100vh;
-                height: 70px;
+                height: 60px;
                 padding: 0 15px;
                 z-index: 999;
             }
 
-            /* 核心容器适配手机屏幕 */
+            /* 核心：手机端保留双栏布局 左帖子(2fr) + 右评论(1fr)，适配旋转后屏幕宽度 */
             .container {
                 max-width: none;
-                width: calc(100vw - 40px); /* 适配旋转后的宽度，留边距 */
-                margin: 80px auto 20px; /* 避开导航栏，底部留边 */
-                grid-template-columns: 1fr; /* 单栏布局，适配手机 */
+                width: calc(100vw - 30px); /* 适配旋转后屏幕宽度，留少量边距 */
+                height: calc(100vw - 80px); /* 适配旋转后屏幕高度，避开导航栏 */
+                margin: 70px auto 10px;
+                grid-template-columns: 2fr 1fr; /* 关键：保留双栏，和电脑端一致 */
+                gap: 15px; /* 缩小栏间距，适配手机 */
                 padding: 0 10px;
-                flex: 1;
+                flex: none; /* 取消弹性，固定尺寸 */
             }
 
-            /* 图片区域适配 */
+            /* 左侧帖子区 - 适配手机双栏 */
+            .content-main {
+                width: 100%;
+                height: 100%;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            /* 帖子图片区 - 等比缩小，适配手机双栏 */
             .image-carousel {
-                height: 300px;
+                height: 220px;
             }
 
-            /* 文字内容适配 */
+            /* 帖子文字 - 精细缩容，适配手机双栏 */
             .post-title {
-                font-size: 18px;
+                font-size: 16px;
+                margin-bottom: 10px;
             }
-            
             .post-body {
-                font-size: 14px;
-                line-height: 1.6;
-            }
-
-            /* 评论区适配 */
-            .comment-section {
-                padding: 15px;
-            }
-            
-            .comment-input {
-                height: 80px;
-                font-size: 14px;
-            }
-            
-            .comment-content {
                 font-size: 13px;
-                padding-left: 35px;
+                line-height: 1.5;
+                margin-bottom: 15px;
             }
-            
-            .reply-content {
+            .post-body p {
+                margin-bottom: 10px;
+            }
+            .tag {
+                padding: 3px 8px;
                 font-size: 12px;
-                padding: 6px 10px;
             }
 
-            /* 弹窗适配旋转后的居中布局 */
+            /* 右侧评论区 - 适配手机双栏，固定高度可滚动 */
+            .content-side {
+                width: 100%;
+                height: 100%;
+            }
+            .comment-section {
+                width: 100%;
+                height: 100%;
+                max-height: 100%;
+                padding: 12px;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            /* 评论区元素 - 缩容适配 */
+            .comment-input-wrapper {
+                margin-bottom: 12px;
+            }
+            .comment-func-bar {
+                padding: 6px 10px;
+                gap: 15px;
+            }
+            .comment-input {
+                height: 50px;
+                font-size: 13px;
+                padding: 8px 10px;
+            }
+            .submit-btn {
+                padding: 4px 12px;
+                font-size: 12px;
+            }
+
+            /* 评论内容 - 缩容适配手机双栏 */
+            .avatar {
+                width: 28px;
+                height: 28px;
+            }
+            .comment-author {
+                font-size: 13px;
+            }
+            .comment-time {
+                font-size: 11px;
+            }
+            .comment-content {
+                font-size: 12px;
+                padding-left: 32px;
+                margin-bottom: 6px;
+            }
+            .comment-replies {
+                margin-left: 32px;
+                gap: 8px;
+            }
+            .reply-content {
+                font-size: 11px;
+                padding: 4px 8px;
+            }
+            .expand-btn {
+                font-size: 12px;
+                padding-left: 32px;
+                margin-top: 3px;
+            }
+
+            /* 弹窗适配旋转后的双栏布局 */
             .modal-overlay {
-                z-index: 1002; /* 高于所有元素，避免被遮挡 */
+                z-index: 1002;
             }
             .modal-content {
-                padding: 15px 20px;
-                font-size: 16px;
-                max-width: 85%;
+                padding: 12px 18px;
+                font-size: 15px;
+                max-width: 80%;
             }
-            
             .modal-close {
-                font-size: 20px;
-            }
-
-            /* 底部按钮适配 */
-            .footer-investigate-btn {
-                padding: 10px 24px;
-                font-size: 16px;
-            }
-
-            /* 调整logo和图标 */
-            .logo-text {
-                display: inline-block;
-                font-size: 16px;
-            }
-            
-            .nav-icon {
                 font-size: 18px;
+                top: 10px;
+                right: 10px;
             }
 
-            /* 搜索框适配 */
-            .search-container {
-                max-width: 400px;
+            /* 导航栏元素缩容 */
+            .logo-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
             }
-            
+            .logo-text {
+                font-size: 14px;
+            }
+            .nav-icon {
+                font-size: 16px;
+            }
             .search-input {
+                height: 32px;
+                font-size: 12px;
+                padding: 0 12px;
+            }
+            .search-container {
+                max-width: 300px;
+            }
+
+            /* 底部按钮 - 适配旋转后双栏布局，缩容 */
+            .footer-investigate {
+                padding: 15px 0;
+                margin-top: 0;
+            }
+            .footer-investigate-btn {
+                padding: 6px 18px;
                 font-size: 13px;
-                padding: 0 15px;
             }
         }
 
-        /* 更小的移动端设备（480px以下）精细优化 */
-        @media screen and (max-width: 480px), screen and (max-device-width: 480px) {
+        /* 小屏手机(400px以下)极致适配 */
+        @media screen and (max-width: 400px), screen and (max-device-width: 400px) {
             .image-carousel {
-                height: 250px;
+                height: 180px;
             }
-
             .post-title {
-                font-size: 16px;
-            }
-            
-            .post-body {
-                font-size: 13px;
-            }
-
-            .footer-investigate-btn {
-                padding: 8px 20px;
                 font-size: 14px;
             }
-
-            .search-container {
-                max-width: 300px;
+            .post-body {
+                font-size: 12px;
+            }
+            .container {
+                gap: 10px;
+                width: calc(100vw - 20px);
+            }
+            .comment-section {
+                padding: 8px;
             }
         }
     </style>
@@ -669,7 +730,6 @@
     <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- 旋转容器：包裹所有内容 -->
     <div class="page-container">
         <!-- 1. 固定导航区 -->
         <nav class="navbar">
@@ -697,7 +757,7 @@
             </div>
         </nav>
 
-        <!-- 2. 核心内容区 -->
+        <!-- 2. 核心双栏布局：左帖子 + 右评论 -->
         <div class="container">
             <div class="content-main">
                 <div class="image-carousel">
@@ -992,7 +1052,7 @@
                 window.location.href = 'https://999isbest.github.io/Information-Analysis-System-Reasons-for-its-Popularity/';
             });
 
-            // 监听窗口旋转/大小变化，重新适配居中布局（适配手机横屏/竖屏切换）
+            // 监听窗口旋转/大小变化，重新适配居中双栏布局
             window.addEventListener('resize', function() {
                 const pageContainer = document.querySelector('.page-container');
                 if (window.innerWidth <= 768) {
