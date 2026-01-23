@@ -834,7 +834,7 @@
 
     <!-- 新增：网页底部居中 深入调查按钮 -->
     <div class="footer-investigate">
-        <button class="footer-investigate-btn" id="footerInvestigateBtn">阅读完毕，开启深入调查</button>
+        <button class="footer-investigate-btn" id="footerInvestigateBtn">阅读完毕，进行信息分析</button>
     </div>
 
     <!-- 弹窗容器 -->
@@ -898,10 +898,10 @@
             }
 
             // 表情/发图功能：仅点击聚焦
-            if (emojiFunc && commentInput) {
+            如果 (emojiFunc && commentInput) {
                 emojiFunc.addEventListener('click', () => commentInput.focus());
             }
-            if (imgFunc && commentInput) {
+            如果 (imgFunc && commentInput) {
                 imgFunc.addEventListener('click', () => commentInput.focus());
             }
 
@@ -939,7 +939,7 @@
             // 点击文字框打开弹窗
             tooltipBoxes.forEach(box => {
                 box.addEventListener('click', () => {
-                    console.log('点击了tooltip框，内容:', box.getAttribute('data-modal-content'));
+                    控制台.日志('点击了tooltip框，内容:', box.getAttribute('data-modal-content'));
                     const content = box.getAttribute('data-modal-content');
                     modalContent.innerHTML = `<p>${content}</p>`; // 仅渲染文本，无按钮
                     modalOverlay.classList.add('show');
@@ -961,16 +961,15 @@
             if (modalOverlay) {
                 modalOverlay.addEventListener('click', (e) => e.target === modalOverlay && closeModal());
             }
-            document.addEventListener('keydown', (e) => e.key === 'Escape' && modalOverlay.classList.contains('show') && closeModal());
+            document.addEventListener('keydown',e)=>key==='Escape'&&modalOverlay.classList.contains('show')closeModal;
 
-            // 新增：底部深入调查按钮点击事件（预留拓展接口）
+            // 新增：底部深入调查按钮点击事件（修改为跳转指定链接）
             const footerInvestigateBtn = document.getElementById('footerInvestigateBtn');
-            
+
             if (footerInvestigateBtn) {
                 footerInvestigateBtn.addEventListener('click', () => {
-                    console.log('点击底部深入调查按钮，可在此添加自定义逻辑');
-                    // 可添加：页面跳转、显示新内容、弹出新弹窗等操作
-                    // 示例：alert('开启深入调查模式！');
+                    // 跳转到指定链接（当前页面跳转）
+                    window.location.href = 'https://999isbest.github.io/Information-Analysis-System-Reasons-for-its-Popularity/';
                 });
             }
         });
