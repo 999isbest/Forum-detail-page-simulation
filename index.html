@@ -44,6 +44,36 @@
             --tooltip-text: #01579b;
             /* 新增：手机端触控最小点击区域 */
             --min-touch-size: 44px;
+            /* 新增：滚动条配色 */
+            --scrollbar-thumb: #c1c1c1;
+            --scrollbar-thumb-hover: #a8a8a8;
+            --scrollbar-track: #f1f1f1;
+        }
+
+        /* ========== 核心新增：自定义滚动条样式 ========== */
+        /* 通用滚动条样式 - 适配所有可滚动区域 */
+        ::-webkit-scrollbar {
+            width: 8px;  /* 垂直滚动条宽度 */
+            height: 8px; /* 水平滚动条高度 */
+        }
+        /* 滚动条轨道 */
+        ::-webkit-scrollbar-track {
+            background: var(--scrollbar-track);
+            border-radius: 4px;
+        }
+        /* 滚动条滑块 */
+        ::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            border-radius: 4px;
+            transition: background 0.2s ease;
+        }
+        /* 滚动条滑块hover状态 */
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--scrollbar-thumb-hover);
+        }
+        /* 圆角滚动条 */
+        ::-webkit-scrollbar-corner {
+            background: transparent;
         }
 
         /* 根容器 - 旋转核心，优化滚动和层级 */
@@ -60,6 +90,9 @@
             /* 优化滚动体验 */
             -webkit-overflow-scrolling: touch;
             scroll-behavior: smooth;
+            /* 强制显示滚动条 */
+            scrollbar-width: thin; /* Firefox */
+            scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track); /* Firefox */
         }
 
         body {
@@ -155,6 +188,9 @@
             display: none;
             z-index: 998;
             font-size: 16px;
+            /* 搜索建议框添加滚动条 */
+            max-height: 200px;
+            overflow-y: auto;
         }
 
         .search-suggestions.show {
@@ -323,6 +359,9 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.03);
             padding: 18px;
             height: fit-content;
+            /* 评论区添加滚动条 */
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
         /* 评论输入框及功能栏 - 放大输入框、优化功能按钮 */
@@ -522,6 +561,9 @@
             transition: all 0.3s ease;
             position: relative;
             text-align: center;
+            /* 弹窗内容添加滚动条 */
+            max-height: 70vh;
+            overflow-y: auto;
         }
 
         .modal-overlay.active .modal-content {
@@ -600,6 +642,7 @@
             }
             .comment-section {
                 padding: 15px;
+                max-height: 75vh;
             }
         }
 
@@ -613,7 +656,15 @@
                 transform-origin: top left;
                 -webkit-transform: rotate(90deg) translateY(-100%);
                 -webkit-transform-origin: top left;
+                /* 手机端滚动条加宽，提升触控体验 */
+                scrollbar-width: auto;
             }
+            
+            /* 手机端滚动条适配旋转后的布局 */
+            #page-wrapper::-webkit-scrollbar {
+                width: 10px;
+            }
+
             /* 弹窗同步旋转，完全贴合屏幕 */
             .modal-overlay {
                 transform: rotate(90deg) translateY(-100%);
@@ -675,6 +726,7 @@
             /* 评论区 - 轻量化适配，保留核心体验 */
             .comment-section {
                 padding: 15px 12px;
+                max-height: 70vh;
             }
             .comment-input {
                 height: 65px;
@@ -712,6 +764,7 @@
                 padding: 22px 25px;
                 font-size: 17px;
                 max-width: 92%;
+                max-height: 65vh;
             }
             .modal-close {
                 font-size: 26px;
@@ -748,6 +801,12 @@
             .footer-investigate-btn {
                 padding: 12px 30px;
                 font-size: 16px;
+            }
+            .comment-section {
+                max-height: 65vh;
+            }
+            .modal-content {
+                max-height: 60vh;
             }
         }
     </style>
